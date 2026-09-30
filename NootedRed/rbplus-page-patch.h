@@ -1,5 +1,6 @@
 // Pure matcher shared by the CPU tests, process-local experiment, and kext.
 // Caller must supply a validated 4096-byte executable page from the exact cache.
+#pragma once
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
@@ -11,12 +12,12 @@ static inline enum RBPageResult rbClassifyPage(const void *data, size_t size,
     if (!data || size!=4096) return RBPageMismatch;
     const unsigned char *original, *replacement;
     size_t within, length;
-    if (offset==0x10b7e000) {
+    if (offset==RB_FULL_PAGE_OFFSET) {
         original=rbFullPage; replacement=rbFullReplacement;
-        within=0xabc; length=sizeof rbFullReplacement;
-    } else if (offset==0x10b83000) {
+        within=RB_FULL_WITHIN; length=sizeof rbFullReplacement;
+    } else if (offset==RB_DELTA_PAGE_OFFSET) {
         original=rbDeltaPage; replacement=rbDeltaReplacement;
-        within=0xbb4; length=sizeof rbDeltaReplacement;
+        within=RB_DELTA_WITHIN; length=sizeof rbDeltaReplacement;
     } else return RBPageMismatch;
     const unsigned char *bytes=(const unsigned char *)data;
     if (memcmp(bytes,original,within) ||
@@ -29,10 +30,10 @@ static inline enum RBPageResult rbClassifyPage(const void *data, size_t size,
 static inline enum RBPageResult rbPatchPage(void *data, size_t size, uint64_t offset) {
     enum RBPageResult result=rbClassifyPage(data,size,offset);
     if (result==RBPageOriginal) {
-        if (offset==0x10b7e000)
-            memcpy((unsigned char *)data+0xabc,rbFullReplacement,sizeof rbFullReplacement);
+        if (offset==RB_FULL_PAGE_OFFSET)
+            memcpy((unsigned char *)data+RB_FULL_WITHIN,rbFullReplacement,sizeof rbFullReplacement);
         else
-            memcpy((unsigned char *)data+0xbb4,rbDeltaReplacement,sizeof rbDeltaReplacement);
+            memcpy((unsigned char *)data+RB_DELTA_WITHIN,rbDeltaReplacement,sizeof rbDeltaReplacement);
     }
     return result;
 }

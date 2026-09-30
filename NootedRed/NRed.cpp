@@ -24,8 +24,8 @@
 #include <IOKit/pci/IOPCIDevice.h>
 #include <Kexts.hpp>
 #include <NRed.hpp>
-#include <RBPlus.hpp>
 #include <PenguinWizardry/RuntimeMC.hpp>
+#include <RBPlus.hpp>
 #include <Regs/GC.hpp>
 #include <Regs/NBIO.hpp>
 #include <Regs/SMU.hpp>

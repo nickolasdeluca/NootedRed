@@ -100,7 +100,7 @@ static void install(unsigned char *p, const unsigned char *original,
 static void testPageMatcher(void) {
     unsigned char bytes[4096], expected[4096], wrong[4096];
     for (unsigned i=0;i<2;i++) {
-        uint64_t offset=i ? 0x10b83000 : 0x10b7e000;
+        uint64_t offset=i ? RB_DELTA_PAGE_OFFSET : RB_FULL_PAGE_OFFSET;
         const unsigned char *page=i ? rbDeltaPage : rbFullPage;
         memcpy(bytes,page,sizeof bytes);
         assert(rbClassifyPage(bytes,sizeof bytes,offset)==RBPageOriginal);
@@ -134,15 +134,15 @@ int main(void) {
     assert(base);
     // The installed kext may have patched these pages already. Restore only
     // this process's private copies for the original-versus-patched CPU oracle.
-    enum RBPageResult f=rbClassifyPage(base+0x26000,4096,0x10b7e000);
-    enum RBPageResult d=rbClassifyPage(base+0x2b000,4096,0x10b83000);
+    enum RBPageResult f=rbClassifyPage(base+RB_FULL_IMAGE_OFFSET-RB_FULL_WITHIN,4096,RB_FULL_PAGE_OFFSET);
+    enum RBPageResult d=rbClassifyPage(base+RB_DELTA_IMAGE_OFFSET-RB_DELTA_WITHIN,4096,RB_DELTA_PAGE_OFFSET);
     assert(f!=RBPageMismatch && d!=RBPageMismatch);
     if (f==RBPageAlreadyPatched)
-        install(base+0x26abc,rbFullReplacement,rbFullOriginal,sizeof rbFullOriginal);
+        install(base+RB_FULL_IMAGE_OFFSET,rbFullReplacement,rbFullOriginal,sizeof rbFullOriginal);
     if (d==RBPageAlreadyPatched)
-        install(base+0x2bbb4,rbDeltaReplacement,rbDeltaOriginal,sizeof rbDeltaOriginal);
-    BlendEmitFn full=(void*)(base+0x26abc);
-    BlendDeltaFn delta=(void*)(base+0x2bbb4);
+        install(base+RB_DELTA_IMAGE_OFFSET,rbDeltaReplacement,rbDeltaOriginal,sizeof rbDeltaOriginal);
+    BlendEmitFn full=(void*)(base+RB_FULL_IMAGE_OFFSET);
+    BlendDeltaFn delta=(void*)(base+RB_DELTA_IMAGE_OFFSET);
     Case *cases=calloc(Cases,sizeof(Case)); assert(cases);
     for (unsigned i=0;i<Cases;i++) {
         Case *c=&cases[i];
@@ -164,8 +164,8 @@ int main(void) {
         }
         run(c,full,delta,false,i);
     }
-    install(base+0x26abc,rbFullOriginal,rbFullReplacement,sizeof rbFullReplacement);
-    install(base+0x2bbb4,rbDeltaOriginal,rbDeltaReplacement,sizeof rbDeltaReplacement);
+    install(base+RB_FULL_IMAGE_OFFSET,rbFullOriginal,rbFullReplacement,sizeof rbFullReplacement);
+    install(base+RB_DELTA_IMAGE_OFFSET,rbDeltaOriginal,rbDeltaReplacement,sizeof rbDeltaReplacement);
     for (unsigned i=0;i<Cases;i++) run(&cases[i],full,delta,true,i);
     printf("PASS: %u synthetic states, full + delta, original versus patched; no GPU work\n",Cases);
     free(cases);

@@ -23,7 +23,7 @@ static bool matchesCache(const char *path) {
 static void validatePage(vnode_t vp, memory_object_t pager, memory_object_offset_t offset,
                          const void *data, int *validated, int *tainted, int *nx) {
     FunctionCast(validatePage,originalValidate)(vp,pager,offset,data,validated,tainted,nx);
-    if (offset!=0x10b7e000 && offset!=0x10b83000) return;
+    if (offset!=RB_FULL_PAGE_OFFSET && offset!=RB_DELTA_PAGE_OFFSET) return;
     // OS build can be populated after this plugin starts. Never patch until
     // it is the supported build, even when the kernel identity already matches.
     if (!rbSupportedOSBuild(osBuild)) return;
@@ -31,7 +31,7 @@ static void validatePage(vnode_t vp, memory_object_t pager, memory_object_offset
     // A nonzero validation result alone does not mean the hash matched.
     if (!vp || !data || !validated || !tainted || !nx ||
         *validated!=0xf || *tainted || *nx) return;
-    const unsigned index=offset==0x10b7e000 ? 0 : 1;
+    const unsigned index=offset==RB_FULL_PAGE_OFFSET ? 0 : 1;
     char path[1024];
     int pathSize=sizeof path;
     if (vn_getpath(vp,path,&pathSize)!=0) return;
