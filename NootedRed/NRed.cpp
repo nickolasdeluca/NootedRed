@@ -24,6 +24,7 @@
 #include <IOKit/pci/IOPCIDevice.h>
 #include <Kexts.hpp>
 #include <NRed.hpp>
+#include <RBPlus.hpp>
 #include <PenguinWizardry/RuntimeMC.hpp>
 #include <Regs/GC.hpp>
 #include <Regs/NBIO.hpp>
@@ -60,6 +61,7 @@ void NRed::init()
         [](void* const, KernelPatcher& patcher)
         {
             singleton().processPatcher();
+            RBPlus::processPatcher(patcher);
             DriverInjector::singleton().processPatcher(patcher);
             PenguinWizardry::RuntimeMCManager::singleton().processPatcher(patcher);
         },

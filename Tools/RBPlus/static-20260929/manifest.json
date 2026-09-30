@@ -1,0 +1,55 @@
+{
+  "kernel_path": "/System/Library/Kernels/kernel",
+  "kernel_sha256": "7543e9a3c6dd4c0e83ccfa8a59737a698168df62f1ec3cd873ecbbceb88903f5",
+  "kernel_uuid": "ce4b48391fe73c569fde3cb2d9e284b3",
+  "kernel_size": 18991272,
+  "gpu_work_submitted": false,
+  "cs-validate-page": {
+    "command": [
+      "xcrun",
+      "llvm-objdump",
+      "-d",
+      "--start-address=0xffffff800081aca0",
+      "--stop-address=0xffffff800081add4",
+      "/System/Library/Kernels/kernel"
+    ],
+    "sha256": "36fd68c620de1c3c2853d3543a98d2d592a1e80995502c17a9f3199e83e3a6be"
+  },
+  "cs-validate-caller": {
+    "command": [
+      "xcrun",
+      "llvm-objdump",
+      "-d",
+      "--start-address=0xffffff8000330060",
+      "--stop-address=0xffffff800033011a",
+      "/System/Library/Kernels/kernel"
+    ],
+    "sha256": "83a3c07112a29da35dd60d60483a5be8499feb72ba32fe9e3a287a68545b958f"
+  },
+  "emitter_pages": [
+    {
+      "name": "full",
+      "path": "/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_x86_64h.03",
+      "cache_uuid": "82f3afee03903cd6a0a528e260288785",
+      "unslid_address": "0x7ffb10b7eabc",
+      "file_offset": "0x10b7eabc",
+      "page_offset": "0x10b7e000",
+      "page_sha256": "46d48a0971d34a88688ce64129e3a14d5f4b2859fde08b786c605e5ebaa52280",
+      "page_size": 4096,
+      "max_protection": 5,
+      "initial_protection": 5
+    },
+    {
+      "name": "delta",
+      "path": "/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_x86_64h.03",
+      "cache_uuid": "82f3afee03903cd6a0a528e260288785",
+      "unslid_address": "0x7ffb10b83bb4",
+      "file_offset": "0x10b83bb4",
+      "page_offset": "0x10b83000",
+      "page_sha256": "1f66eff86041a96f91cb0aab9599e59449962daca58b19b632ceb24049dd7a45",
+      "page_size": 4096,
+      "max_protection": 5,
+      "initial_protection": 5
+    }
+  ]
+}
